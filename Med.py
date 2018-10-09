@@ -4,6 +4,10 @@ from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 from keras.layers import Dense
 
+#
+from keras.models import model_from_json
+#import numpy
+
 #initialize the CNN
 classifier = Sequential()
 
@@ -32,11 +36,19 @@ test_datagen = ImageDataGenerator(rescale = 1./255)
 training_set = train_datagen.flow_from_directory('/home/DEADPOOL/Documents/final_project/my_imple/dataset/training_set',target_size=(64,64),batch_size=32,class_mode='binary')
 test_set = test_datagen.flow_from_directory('/home/DEADPOOL/Documents/final_project/my_imple/dataset/test_set',target_size=(64,64),batch_size=32,class_mode='binary')
 
-#save model and print accuracy
+
+
 from IPython.display import display
 from PIL import Image
 
 classifier.fit_generator(training_set,steps_per_epoch=8000,epochs=10,validation_data=test_set,validation_steps=800)
+#save the model in JSON
+model_json = classifier.to_json()
+with open("model.json","w") as json_file:
+    json_file.write(model_json)
+
+classifier.save_weights("model.h5")
+print('model saved')
 
 import numpy as np
 from keras.preprocessing import image
